@@ -1,0 +1,45 @@
+name: CI From Github Actions For Frontend and Backend Service
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push frontend service
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend-test:latest ./simple-fe
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend-test:latest
+  
+      - name: Build and push backend service
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-test:latest ./backend-api-test
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend-test:latest
+
+      - name: Start containers with docker-compose
+        run: docker-compose up -d
+
+      - name: Wait for services on container to be ready
+        run: sleep 10
+
+      - name: Test backend connection
+        run: |
+          curl --fail http://localhost:8080 || exit 1
+
+      - name: Test frontend connection
+        run: |
+          curl --fail http://localhost:3000 || exit 1

@@ -22,13 +22,13 @@ jobs:
 
       - name: Build and push frontend service
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./simple-fe
-          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./simple-fe
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
   
       - name: Build and push backend service
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend-api-test
-          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest ./backend-api-test
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
 
       - name: Start containers with docker-compose
         run: docker-compose up -d

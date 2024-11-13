@@ -20,15 +20,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push frontend service
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./simple-fe
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
-  
-      - name: Build and push backend service
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest ./backend-api-test
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+      - name: Build and Push Frontend Docker
+        uses: docker/build-push-action@v2
+        with:
+          context: ./simple-fe
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+          
+      - name: Build and Push Backend Docker
+        uses: docker/build-push-action@v2
+        with:
+          context: ./backend-api-test
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
 
       - name: Start containers with docker-compose
         run: docker-compose up -d

@@ -1,25 +1,28 @@
 version: '3.8'
 
 services:
-  backend:
-    build: 
-      context: ./backend-api-test
-    container_name: backend-container
-    ports:
-      - "8080:8080"
-    environment:
-      - APP_MODE=production
-
   frontend:
     build: 
       context: ./simple-fe
-    container_name: frontend-container
+    container_name: frontend
     ports:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_BASE_API_URL=http://backend:8080
       - NEXT_PUBLIC_LOGIN_URL=http://backend:8080/accounts/v1/auth/login
       - NEXT_PUBLIC_GET_PROFILE_URL=http://backend:8080/accounts/v1/users/profile
+
+  backend:
+    build: 
+      context: ./backend-api-test
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_MODE=production
+      - config=production
+    volumes:
+      - ./backend-api-test/config/config-production.yml:/config/config-production.yml
     depends_on:
-      - backend
+      - frontend
       

@@ -23,14 +23,14 @@ jobs:
       - name: Build and Push Frontend Docker
         uses: docker/build-push-action@v2
         with:
-          context: ./simple-fe
+          context: ./simple-fe/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
           
       - name: Build and Push Backend Docker
         uses: docker/build-push-action@v2
         with:
-          context: ./backend-api-test
+          context: ./backend-api-test/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
 
